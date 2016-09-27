@@ -90,13 +90,17 @@ window.addEventListener('message', function(event){
 });
 //Check for updates
 $.getJSON("https://api.github.com/repos/Quacky2200/Spotify-Web-Player-for-Linux/releases", (data) => {
-	var version_update_tag = data[0].tag_name.match(/([0-9\.]+)/)[1].split('.');
-	var version_now_tag = props.electron.app.getVersion().match(/([0-9\.]+)/)[1].split('.');
-	var versionSuccess = [0];
-	for(var num in version_update_tag){
-		if(parseInt(version_update_tag[num]) > parseInt(version_now_tag[num])) versionSuccess.push(1);
-	}
-	var updateAvailable = versionSuccess.reduce((a,b) => a+b) > 0;
+	var updateAvailable = (() => {
+		var version_update_tag = data[0].tag_name.match(/([0-9\.]+)/)[1].split('.');
+		var version_now_tag = props.electron.app.getVersion().match(/([0-9\.]+)/)[1].split('.');
+		for(var num in version_update_tag){
+			if(parseInt(version_update_tag[num]) > parseInt(version_now_tag[num])) {
+				return true;
+			} else if (parseInt(version_update_tag[num]) < parseInt(version_now_tag[num])){
+				return false
+			}
+		}
+	})();
 	if(updateAvailable){
 		props.fs.readFile(__dirname + '/update.png', {encoding: 'base64'}, (err, imgdata)=>{
 		  if (err) console.err(err);

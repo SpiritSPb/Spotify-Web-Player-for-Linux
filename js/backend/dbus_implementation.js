@@ -30,8 +30,8 @@ let MPRISAndNotifications = new DBusInterpreter(serviceMPRISAndNotifications.std
 
 module.exports = {
     killall: () => {
-        serviceMediaKeys.kill();
-        serviceMPRISAndNotifications.kill();
+        process.kill(serviceMediaKeys.pid);
+        process.kill(serviceMPRISAndNotifications.pid);
     },
     services: {
         MediaKeys: serviceMediaKeys,
